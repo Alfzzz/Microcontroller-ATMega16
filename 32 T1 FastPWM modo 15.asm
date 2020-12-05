@@ -1,0 +1,39 @@
+/*Ejercicio 7 Generar usando el Timer 1 una señal PWM de 50ms  con 70% de ciclo útil. UtiliceFAST PWM y modo no invertido.*/
+/*
+F_señal=1/50ms=8MHz/((Top+1)*1024)
+Top=8M*50m/1024-1=390-------->OCR1AH|OCR1AL	;Modo 15
+
+Match=Top*0.7=273 ----------->OCR1BH|OCR1BL
+
+Palabra de control:
+TCCR1A=|COM1A1|COM1A0|COM1B1|COM1B0|FOC1A|FOC1B|WGM11|WGM10|=00100011 Clear para B, Modo 15 Fast PWM,
+TCCR1B=|ICNC1|ICES1|--|WGM13|WGM12|CS12|CS11|CS10|=00011101 Modo 15 Fast PWM, prescaler de 1024 
+OC1B sale por PD4
+*/
+
+
+.ORG 0
+.INCLUDE "m16def.inc"
+
+LDI R16,HIGH(RAMEND)
+OUT SPH,R16
+LDI R16,LOW(RAMEND)
+OUT SPL,R16
+
+SBI DDRD,4 ;Salida de OC1B
+LDI R16,HIGH(390)	;Tope
+OUT OCR1AH,R16
+LDI R16,LOW(390)
+OUT OCR1AL,R16
+LDI R16,HIGH(273) ;Match
+OUT OCR1BH,R16
+LDI R16,LOW(273)
+OUT OCR1BL,R16
+
+LDI R16,0b00100011
+OUT TCCR1A,R16
+LDI R16,0b00011101
+OUT TCCR1B,R16
+
+Fin:
+	RJMP Fin
