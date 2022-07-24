@@ -1,3 +1,3 @@
 # Microcontroller-ATMega16
 
-ASM personal notes
+ASM personal notes for microcontroller course 
